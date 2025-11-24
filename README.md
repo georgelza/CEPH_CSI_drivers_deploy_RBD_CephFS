@@ -6,14 +6,23 @@
 
 **Overview**
 
-Deploying, specifically both the RBD and CephFS CSI stacks onto a Kubernetes cluster into separate namespaces
+Deploying, specifically both the RBD and CephFS CSI stacks onto a Kubernetes cluster into separate namespaces using [HELM](https://helm.sh) and YAML configuration files.
+
 
 **Well firstly, what is CEPH, you may ask.**
 
 *Ceph is an open-source, software-defined storage platform that provides unified object, block, and file storage within a single, scalable cluster. It links multiple storage servers into a single distributed system, making it fault-tolerant and highly available without a single point of failure. Ceph is known for its flexibility, ability to run on commodity hardware, and compatibility with other open-source projects like OpenStack and Kubernetes.* 
 
+`<Diagram>`
+
 See [Ceph: An Overview](https://fabreur.medium.com/ceph-an-overview-e971c00ded93)
 
+
+**What is a CEPH Cluster**
+
+A Ceph cluster is a distributed, scalable storage system that provides object, block, and file storage from a single, unified cluster. It uses a collection of daemons, including Ceph Monitors and Ceph OSD (Object Storage Daemons), to store and replicate data across multiple nodes running on commodity hardware. A key feature is the use of the CRUSH algorithm to automatically distribute data without a central bottleneck, ensuring reliability and performance. 
+
+`<Diagram>`
 
 This all started with my desire to deploy various containers onto my [Kubespray](https://github.com/kubernetes-sigs/kubespray) cluster.
 
@@ -29,14 +38,18 @@ This all started with my desire to deploy various containers onto my [Kubespray]
 
 For which some require a S3 based object storage, some requiring File system based PVC storage and some just happy with a blob of PVC.
 
-For the above I basically required whats called a CSI driver/stack, CSI meaning Container Storage Interface allowing my Kubernetes cluster to use external persistent storage.
+For the above I basically required whats called a CSI driver/stack, CSI meaning Container Storage Interface allowing my Kubernetes cluster to use external storage for K8S persistent storage.
 
 As my environment is all hosted as VM's on a [Proxmox](https://www.proxmox.com/en/) cluster and it iself includes [CEPH](https://ceph.io/en/)... well that then lead to the below.
+
+[GIT REPO](https://github.com/georgelza/CEPH_CSI_drivers_deploy_RBD_CephFS)
 
 
 ## About my Environment
 
-Below is a little overview of my lab.
+Below is a **little** overview of my lab.
+
+<Diagram>
 
 3 x minicomputers 
 
@@ -104,8 +117,61 @@ This template image was then cloned into the following 6 VM's.
   - 172.16.10.76
   - 172.16.30.76
   - 172.16.40.76
-  
-NOTE: for the Kubernetes and Ceph and [MetalLB](https://metallb.io) stack to work the above VM's need to be configured with processor as `x86-63-v2`
+
+
+### /etc/hosts
+
+```  
+172.16.10.51    pmox1.tinmanza.com            pmox1
+172.16.30.51    pmox1-vm.tinmanza.com         pmox1-vm
+172.16.40.51    pmox1-io.tinmanza.com         pmox1-io
+
+172.16.10.52    pmox2.tinmanza.com            pmox2
+172.16.30.52    pmox2-vm.tinmanza.com         pmox2-vm
+172.16.40.52    pmox2-io.tinmanza.com         pmox2-io
+
+172.16.10.53    pmox3.tinmanza.com            pmox3
+172.16.30.53    pmox3-vm.tinmanza.com         pmox3-vm
+172.16.40.53    pmox3-io.tinmanza.com         pmox3-io
+
+172.16.10.24    vaultx.tinmanza.com           vaultx
+172.16.40.24    vaultx-io.tinmanza.com        vaultx-io
+
+# Kubespray Prd Cluster
+172.16.10.61    ubuntu-1.tinmanza.com         ubuntu-1
+172.16.30.61    ubuntu-1-vm.tinmanza.com      ubuntu-1-vm
+172.16.40.61    ubuntu-1-io.tinmanza.com      ubuntu-1-io
+
+172.16.10.62    ubuntu-2.tinmanza.com         ubuntu-2
+172.16.30.62    ubuntu-2-vm.tinmanza.com      ubuntu-2-vm
+172.16.40.62    ubuntu-2-io.tinmanza.com      ubuntu-2-io
+
+172.16.10.71    k8s-ubuntu-1.tinmanza.com     k8s-ubuntu-1
+172.16.30.71    k8s-ubuntu-1-vm.tinmanza.com  k8s-ubuntu-1-vm
+172.16.40.71    k8s-ubuntu-1-io.tinmanza.com  k8s-ubuntu-1-io
+
+172.16.10.72    k8s-ubuntu-2.tinmanza.com     k8s-ubuntu-2
+172.16.30.72    k8s-ubuntu-2-vm.tinmanza.com  k8s-ubuntu-2-vm
+172.16.40.72    k8s-ubuntu-2-io.tinmanza.com  k8s-ubuntu-2-io
+
+172.16.10.73    k8s-ubuntu-3.tinmanza.com     k8s-ubuntu-3
+172.16.30.73    k8s-ubuntu-3-vm.tinmanza.com  k8s-ubuntu-3-vm
+172.16.40.73    k8s-ubuntu-3-io.tinmanza.com  k8s-ubuntu-3-io
+
+172.16.10.74    k8s-ubuntu-4.tinmanza.com     k8s-ubuntu-4
+172.16.30.74    k8s-ubuntu-4-vm.tinmanza.com  k8s-ubuntu-4-vm
+172.16.40.74    k8s-ubuntu-4-io.tinmanza.com  k8s-ubuntu-4-io
+
+172.16.10.75    k8s-ubuntu-5.tinmanza.com     k8s-ubuntu-5
+172.16.30.75    k8s-ubuntu-5-vm.tinmanza.com  k8s-ubuntu-5-vm
+172.16.40.75    k8s-ubuntu-5-io.tinmanza.com  k8s-ubuntu-5-io
+
+172.16.10.76    k8s-ubuntu-6.tinmanza.com     k8s-ubuntu-6
+172.16.30.76    k8s-ubuntu-6-vm.tinmanza.com  k8s-ubuntu-6-vm
+172.16.40.76    k8s-ubuntu-6-io.tinmanza.com  k8s-ubuntu-6-io
+```
+
+**NOTE**: for the Kubernetes, Ceph and [MetalLB](https://metallb.io) stack to work the above VM's need to be configured with processor as `x86-63-v2`
 
 Each VM is configured with:
 
@@ -119,7 +185,7 @@ See: [Setting up a Kubernetes cluster with Kubespray]([https://medium.com/@leona
 
 At this point, we are now ready to deploy our Ceph CSI stack onto our Kubernetes cluster that will act as "client interface" allowig us use storage as available from the Proxmox hosted Ceph cluster. Allot of the "other" examples out on the interwebs want to show you how to deploy a CEPH cluster onto your Kubernetes cluster. I opted to rather "plug" into the one I already had.
 
-Once you clone my project GIT repo, you will find 2 folders. You will see their names match up to the CEPH CSI GIT repo structure... read on you will see why.
+Once you clone my [project GIT repo](https://github.com/georgelza/CEPH_CSI_drivers_deploy_RBD_CephFS), you will find 2 folders. You will see their names match up to the CEPH CSI GIT repo structure... read on you will see why.
 
 So between the 2 folders we have everything required to deploy the Ceph RBD and Ceph FS CSI drivers.
 
@@ -172,6 +238,14 @@ pvc-b08b5aaf-8b51-4f49-99d1-41f0ab9bc812   1Gi        RWX            Delete     
 ```
 
 
+## SUMMARY
+
+Well, hope I got it all accurately documented and copied, Hope it’s of benefit for someone. 
+
+Thanks for following. Till next time.
+
+And like that we're done with our little trip down another Rabbit Hole.
+
 ## Credits
 
 While trying to figure out how to get the above done, and allot of searching, I could not find "exactly/perfectly" what I wanted.
@@ -180,3 +254,13 @@ But, then I got lucky and found [Ceph Storage Integration with Kubernetes using 
 
 This got me going with the RBD CSI stack. using this pattern and allot of trying, googling, claude'ing etc I got the Cephfs figured out.
 
+
+## About Me
+
+I’m a techie, a technologist, always curious, love data, have for as long as I can remember always worked with data in one form or the other, Database admin, Database product lead, data platforms architect, infrastructure architect hosting databases, backing it up, optimizing performance, accessing it.  Data data data… it makes the world go round.
+
+In recent years, pivoted into a more generic Technology Architect role, capable of full stack architecture.
+
+George Leonard
+georgelza@gmail.com
+https://medium.com/@georgelza
