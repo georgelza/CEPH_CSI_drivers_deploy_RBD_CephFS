@@ -216,7 +216,7 @@ kubectl get pods -n ceph-csi-rbd -o wide
 ### Create our RBD Secret
 
 ```bash
-kubectl apply -f rbd-secret.yaml
+kubectl apply -f rbd-secrets.yaml
 ```
 
 ### Create RBD StorageClass

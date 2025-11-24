@@ -88,32 +88,32 @@ The master image was pre configured with some users (`ansible`) and included the
 
 This template image was then cloned into the following 6 VM's.
 
-- 301 k8s-ubuntu-1  pmox1   master/control plane
+- 301 k8s-ubuntu-1  hosted on pmox1 as a master
   - 172.16.10.71    (net0, Public Access, over bridge0)
   - 172.16.30.71    (net1, K8S inter node comm, over bridge1)
   - 172.16.40.71    (net2, IO comms, traffic between nodes and between nodes and the TrueNAS, over bridge1)
 
-- 302 k8s-ubuntu-2  pmox2   master/control plane
+- 302 k8s-ubuntu-2  hosted on pmox2 as a master
   - 172.16.10.72
   - 172.16.30.72
   - 172.16.40.72
 
-- 303 k8s-ubuntu-3  pmox3   master/control plane
+- 303 k8s-ubuntu-3  hosted on pmox3 as a master
   - 172.16.10.73
   - 172.16.30.73
   - 172.16.40.73
 
-- 304 k8s-ubuntu-4  pmox1   worker
+- 304 k8s-ubuntu-4  hosted on pmox1 as a worker
   - 172.16.10.74
   - 172.16.30.74
   - 172.16.40.74
 
-- 305 k8s-ubuntu-5  pmox2   worker
+- 305 k8s-ubuntu-5  hosted on pmox2 as a worker
   - 172.16.10.75
   - 172.16.30.75
   - 172.16.40.75
 
-- 306 k8s-ubuntu-6  pmox3   worker
+- 306 k8s-ubuntu-6  hosted on pmox3 as a worker
   - 172.16.10.76
   - 172.16.30.76
   - 172.16.40.76
@@ -122,53 +122,53 @@ This template image was then cloned into the following 6 VM's.
 ### /etc/hosts
 
 ```  
-172.16.10.51    pmox1.tinmanza.com            pmox1
-172.16.30.51    pmox1-vm.tinmanza.com         pmox1-vm
-172.16.40.51    pmox1-io.tinmanza.com         pmox1-io
+172.16.10.51    pmox1.<domain>.com            pmox1
+172.16.30.51    pmox1-vm.<domain>.com         pmox1-vm
+172.16.40.51    pmox1-io.<domain>.com         pmox1-io
 
-172.16.10.52    pmox2.tinmanza.com            pmox2
-172.16.30.52    pmox2-vm.tinmanza.com         pmox2-vm
-172.16.40.52    pmox2-io.tinmanza.com         pmox2-io
+172.16.10.52    pmox2.<domain>.com            pmox2
+172.16.30.52    pmox2-vm.<domain>.com         pmox2-vm
+172.16.40.52    pmox2-io.<domain>.com         pmox2-io
 
-172.16.10.53    pmox3.tinmanza.com            pmox3
-172.16.30.53    pmox3-vm.tinmanza.com         pmox3-vm
-172.16.40.53    pmox3-io.tinmanza.com         pmox3-io
+172.16.10.53    pmox3.<domain>.com            pmox3
+172.16.30.53    pmox3-vm.<domain>.com         pmox3-vm
+172.16.40.53    pmox3-io.<domain>.com         pmox3-io
 
-172.16.10.24    vaultx.tinmanza.com           vaultx
-172.16.40.24    vaultx-io.tinmanza.com        vaultx-io
+172.16.10.24    vaultx.<domain>.com           vaultx
+172.16.40.24    vaultx-io.<domain>.com        vaultx-io
 
 # Kubespray Prd Cluster
-172.16.10.61    ubuntu-1.tinmanza.com         ubuntu-1
-172.16.30.61    ubuntu-1-vm.tinmanza.com      ubuntu-1-vm
-172.16.40.61    ubuntu-1-io.tinmanza.com      ubuntu-1-io
+172.16.10.61    ubuntu-1.<domain>.com         ubuntu-1
+172.16.30.61    ubuntu-1-vm.<domain>.com      ubuntu-1-vm
+172.16.40.61    ubuntu-1-io.<domain>.com      ubuntu-1-io
 
-172.16.10.62    ubuntu-2.tinmanza.com         ubuntu-2
-172.16.30.62    ubuntu-2-vm.tinmanza.com      ubuntu-2-vm
-172.16.40.62    ubuntu-2-io.tinmanza.com      ubuntu-2-io
+172.16.10.62    ubuntu-2.<domain>.com         ubuntu-2
+172.16.30.62    ubuntu-2-vm.<domain>.com      ubuntu-2-vm
+172.16.40.62    ubuntu-2-io.<domain>.com      ubuntu-2-io
 
-172.16.10.71    k8s-ubuntu-1.tinmanza.com     k8s-ubuntu-1
-172.16.30.71    k8s-ubuntu-1-vm.tinmanza.com  k8s-ubuntu-1-vm
-172.16.40.71    k8s-ubuntu-1-io.tinmanza.com  k8s-ubuntu-1-io
+172.16.10.71    k8s-ubuntu-1.<domain>.com     k8s-ubuntu-1
+172.16.30.71    k8s-ubuntu-1-vm.<domain>.com  k8s-ubuntu-1-vm
+172.16.40.71    k8s-ubuntu-1-io.<domain>.com  k8s-ubuntu-1-io
 
-172.16.10.72    k8s-ubuntu-2.tinmanza.com     k8s-ubuntu-2
-172.16.30.72    k8s-ubuntu-2-vm.tinmanza.com  k8s-ubuntu-2-vm
-172.16.40.72    k8s-ubuntu-2-io.tinmanza.com  k8s-ubuntu-2-io
+172.16.10.72    k8s-ubuntu-2.<domain>.com     k8s-ubuntu-2
+172.16.30.72    k8s-ubuntu-2-vm.<domain>.com  k8s-ubuntu-2-vm
+172.16.40.72    k8s-ubuntu-2-io.<domain>.com  k8s-ubuntu-2-io
 
-172.16.10.73    k8s-ubuntu-3.tinmanza.com     k8s-ubuntu-3
-172.16.30.73    k8s-ubuntu-3-vm.tinmanza.com  k8s-ubuntu-3-vm
-172.16.40.73    k8s-ubuntu-3-io.tinmanza.com  k8s-ubuntu-3-io
+172.16.10.73    k8s-ubuntu-3.<domain>.com     k8s-ubuntu-3
+172.16.30.73    k8s-ubuntu-3-vm.<domain>.com  k8s-ubuntu-3-vm
+172.16.40.73    k8s-ubuntu-3-io.<domain>.com  k8s-ubuntu-3-io
 
-172.16.10.74    k8s-ubuntu-4.tinmanza.com     k8s-ubuntu-4
-172.16.30.74    k8s-ubuntu-4-vm.tinmanza.com  k8s-ubuntu-4-vm
-172.16.40.74    k8s-ubuntu-4-io.tinmanza.com  k8s-ubuntu-4-io
+172.16.10.74    k8s-ubuntu-4.<domain>.com     k8s-ubuntu-4
+172.16.30.74    k8s-ubuntu-4-vm.<domain>.com  k8s-ubuntu-4-vm
+172.16.40.74    k8s-ubuntu-4-io.<domain>.com  k8s-ubuntu-4-io
 
-172.16.10.75    k8s-ubuntu-5.tinmanza.com     k8s-ubuntu-5
-172.16.30.75    k8s-ubuntu-5-vm.tinmanza.com  k8s-ubuntu-5-vm
-172.16.40.75    k8s-ubuntu-5-io.tinmanza.com  k8s-ubuntu-5-io
+172.16.10.75    k8s-ubuntu-5.<domain>.com     k8s-ubuntu-5
+172.16.30.75    k8s-ubuntu-5-vm.<domain>.com  k8s-ubuntu-5-vm
+172.16.40.75    k8s-ubuntu-5-io.<domain>.com  k8s-ubuntu-5-io
 
-172.16.10.76    k8s-ubuntu-6.tinmanza.com     k8s-ubuntu-6
-172.16.30.76    k8s-ubuntu-6-vm.tinmanza.com  k8s-ubuntu-6-vm
-172.16.40.76    k8s-ubuntu-6-io.tinmanza.com  k8s-ubuntu-6-io
+172.16.10.76    k8s-ubuntu-6.<domain>.com     k8s-ubuntu-6
+172.16.30.76    k8s-ubuntu-6-vm.<domain>.com  k8s-ubuntu-6-vm
+172.16.40.76    k8s-ubuntu-6-io.<domain>.com  k8s-ubuntu-6-io
 ```
 
 **NOTE**: for the Kubernetes, Ceph and [MetalLB](https://metallb.io) stack to work the above VM's need to be configured with processor as `x86-63-v2`
@@ -185,15 +185,32 @@ See: [Setting up a Kubernetes cluster with Kubespray]([https://medium.com/@leona
 
 At this point, we are now ready to deploy our Ceph CSI stack onto our Kubernetes cluster that will act as "client interface" allowig us use storage as available from the Proxmox hosted Ceph cluster. Allot of the "other" examples out on the interwebs want to show you how to deploy a CEPH cluster onto your Kubernetes cluster. I opted to rather "plug" into the one I already had.
 
-Once you clone my [project GIT repo](https://github.com/georgelza/CEPH_CSI_drivers_deploy_RBD_CephFS), you will find 2 folders. You will see their names match up to the CEPH CSI GIT repo structure... read on you will see why.
+### The Deployment
+
+Can be seen as the executing the following phases:
+
+- Source CEPH Cluster information and Prepare Storage and User Access &Credentials
+- Consolidate information from above into Yaml based configuration files
+- Modify `values.yaml`
+- Deploy Ceph CSI stack using `helm install -n <namespace> <app> --values <rbd or cephfs>-values.yaml`
+- Deploy our configuration Yaml files kubectl apply -f <filename>, creating `csi-<rbd or cephfs>-secret` & `csi-<rbd or cephfs>-sc`
+- Test/Validate by creating test PVC and pod.
+
+
+Once you clone the [project GIT repo](https://github.com/georgelza/CEPH_CSI_drivers_deploy_RBD_CephFS), you will find 2 folders. You will see their names match up to the CEPH CSI GIT repo structure... read on you will see why.
 
 So between the 2 folders we have everything required to deploy the Ceph RBD and Ceph FS CSI drivers.
 
-I've gone with a dedicated namespace for each. Quickly figured it out was not simple, deploying just one CSI stack, is easy, but as soon as you try both the RBD and cephfs, you run into some fun, in the end I think the management would be simpler though.
+I've gone with a dedicated namespace for each. 
+
+I quickly figured out, it was not simple. Deploying just one CSI stack, is easy, but as soon as you try both the RBD and Cephfs, you run into some fun, in the end I think the usage of 2namespaces will make management simpler though.
 
 The biggest thing, ye accurate copy/past'ing is important, hehehe and then the 2 directories each contain a `values.yaml` file, as included in the Ceph git repo also. The biggest change in these files are the modification of the `container` and `service` ports numbers.
 
-The trick in the end was to modify the container and service ports for the RBD CSI install onto ports 8082 and for Cephfs CSI install onto 8081.
+The trick in the end was to modify both the `container` and `service` ports:
+
+- Cephfs CSI install onto ports 8081
+- RBD CSI install onto ports 8082 
 
 I've decided to stick with the "suggested" namespaces, storage class and secret names:
 
@@ -208,17 +225,19 @@ I've decided to stick with the "suggested" namespaces, storage class and secret 
 - csi-rbd-sc
 
 **Secrets:**
+
 The secrets I did decide to relocate into the dedicate respective namespace though, the base script normally deploys the secrets into the `default` namespace.
 
 - csi-cephfs-secret
 - csi-rbd-secret
 
 
-### Deploying.
+To deploy the stack, copy the contants of `ceph-csi-cephfs` into the `ceph-csi/charts/ceph-csi-cephfs` directory as located in the GIT repo cloned and similarly copy the contents of `ceph-csi-rbd` into the `ceph-csi/charts/ceph-csi-rbd` directory.
 
-To deploy the stack, copy the contants of `ceph-csi-cephfs` into the `ceph-csi/charts/ceph-csi-cephfs` directory as located in the GIT repo cloned and similarly copy the contents of `ceph-csi-rbd` into the `ceph-csi/ceph-csi/rbd` directory.
+Now follow the slightly more detail, with examples instructions in:
 
-Now follow the `rbd-deploy.md` to deploy the RBD CSI stack and the `cephfs-deploy.md` to deploy the Cephfs CSI stack.
+- `rbd-deploy.md` to deploy the RBD CSI stack.
+- `cephfs-deploy.md` to deploy the Cephfs CSI stack.
 
 Once You done the above you will end with something that should look like this.
 
@@ -252,7 +271,7 @@ While trying to figure out how to get the above done, and allot of searching, I 
 
 But, then I got lucky and found [Ceph Storage Integration with Kubernetes using Ceph CSI](https://medium.com/@satishdotpatel/ceph-integration-with-kubernetes-using-ceph-csi-c434b41abd9c) by [Satish Patel](https://medium.com/@satishdotpatel).
 
-This got me going with the RBD CSI stack. using this pattern and allot of trying, googling, claude'ing etc I got the Cephfs figured out.
+His Medium article got me going with the RBD CSI stack, using this pattern and allot of trying, googling, claude'ing etc I got the Cephfs figured out.
 
 
 ## About Me
