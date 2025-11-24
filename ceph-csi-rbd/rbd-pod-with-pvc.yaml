@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rbd-pvc
+  namespace: ceph-csi-rbd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: csi-rbd-sc
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvc-demo
+  namespace: ceph-csi-rbd
+spec:
+  containers:
+  - name:  demo-container
+    image: busybox
+    command: ["sh", "-c", "echo 'Hello RBD' > /mnt/rbd/data.txt && sleep 3600"]
+    volumeMounts:
+    - name: rbd-claim
+      mountPath: /mnt/rbd
+      
+  volumes:
+  - name: rbd-claim
+    persistentVolumeClaim:
+      claimName: rbd-pvc

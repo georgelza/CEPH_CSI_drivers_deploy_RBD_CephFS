@@ -1,0 +1,9 @@
+  csiConfig: 
+    - clusterID: "32a09c66-a6c3-4329-8339-15510d2ea9e0"
+      monitors:
+        - "172.16.10.51:6789"
+        - "172.16.10.52:6789" 
+        - "172.16.10.53:6789"
+  provisioner:
+    name: provisioner
+    replicaCount: 2
